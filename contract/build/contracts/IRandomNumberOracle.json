@@ -1,0 +1,346 @@
+{
+  "contractName": "IRandomNumberOracle",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getRandomNumberPair",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getRandomNumberPair\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"},{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/hagenschupp/Documents/Projekte/Ethereum/TokenCasino/contract/contracts/IRandomNumberOracle.sol\":\"IRandomNumberOracle\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/hagenschupp/Documents/Projekte/Ethereum/TokenCasino/contract/contracts/IRandomNumberOracle.sol\":{\"keccak256\":\"0x1992368cab8f85f9f3fb237ddf38e67c8eca2112e309d391a41a961bc1f2911d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ca51bd32d553a496fd84b4d9731d41b72a12259ec2b2a2cdc12fd026399d6860\",\"dweb:/ipfs/QmcDwJxwamRayWtpaRJpyiNwiT8dL2X9bNHFST6aFYRTKQ\"]},\"@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0xcc78a17dd88fa5a2edc60c8489e2f405c0913b377216a5b26b35656b2d0dab52\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://526dc85e1f9b9b45830e202568d267d93dde7a4fcccf4ad7798dadcd92304d3c\",\"dweb:/ipfs/QmaoXMB972J3cSDLtBq3xBo4jLwqD2uzXTwujtSPqkYVhR\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.7.4;\n\nimport \"@openzeppelin/contracts/math/SafeMath.sol\";\n\ninterface IRandomNumberOracle {\n  function getRandomNumberPair() external returns (uint32, uint32);\n}",
+  "sourcePath": "/Users/hagenschupp/Documents/Projekte/Ethereum/TokenCasino/contract/contracts/IRandomNumberOracle.sol",
+  "ast": {
+    "absolutePath": "/Users/hagenschupp/Documents/Projekte/Ethereum/TokenCasino/contract/contracts/IRandomNumberOracle.sol",
+    "exportedSymbols": {
+      "IRandomNumberOracle": [
+        646
+      ],
+      "SafeMath": [
+        1158
+      ]
+    },
+    "id": 647,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 637,
+        "literals": [
+          "solidity",
+          "^",
+          "0.7",
+          ".4"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:23:3"
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/math/SafeMath.sol",
+        "file": "@openzeppelin/contracts/math/SafeMath.sol",
+        "id": 638,
+        "nodeType": "ImportDirective",
+        "scope": 647,
+        "sourceUnit": 1159,
+        "src": "57:51:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 646,
+        "linearizedBaseContracts": [
+          646
+        ],
+        "name": "IRandomNumberOracle",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "functionSelector": "8466e59c",
+            "id": 645,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getRandomNumberPair",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 639,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "172:2:3"
+            },
+            "returnParameters": {
+              "id": 644,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 641,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 645,
+                  "src": "193:6:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 640,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "193:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 643,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 645,
+                  "src": "201:6:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 642,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "201:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "192:16:3"
+            },
+            "scope": 646,
+            "src": "144:65:3",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 647,
+        "src": "110:101:3"
+      }
+    ],
+    "src": "32:179:3"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/hagenschupp/Documents/Projekte/Ethereum/TokenCasino/contract/contracts/IRandomNumberOracle.sol",
+      "exportedSymbols": {
+        "IRandomNumberOracle": [
+          646
+        ],
+        "SafeMath": [
+          1158
+        ]
+      },
+      "license": "MIT"
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.7",
+            ".4"
+          ]
+        },
+        "id": 637,
+        "name": "PragmaDirective",
+        "src": "32:23:3"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 1159,
+          "absolutePath": "@openzeppelin/contracts/math/SafeMath.sol",
+          "file": "@openzeppelin/contracts/math/SafeMath.sol",
+          "scope": 647,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 638,
+        "name": "ImportDirective",
+        "src": "57:51:3"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "interface",
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            646
+          ],
+          "name": "IRandomNumberOracle",
+          "scope": 647
+        },
+        "children": [
+          {
+            "attributes": {
+              "functionSelector": "8466e59c",
+              "implemented": false,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "getRandomNumberPair",
+              "scope": 646,
+              "stateMutability": "nonpayable",
+              "virtual": false,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 639,
+                "name": "ParameterList",
+                "src": "172:2:3"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 645,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint32",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint32",
+                          "type": "uint32"
+                        },
+                        "id": 640,
+                        "name": "ElementaryTypeName",
+                        "src": "193:6:3"
+                      }
+                    ],
+                    "id": 641,
+                    "name": "VariableDeclaration",
+                    "src": "193:6:3"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "scope": 645,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint32",
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint32",
+                          "type": "uint32"
+                        },
+                        "id": 642,
+                        "name": "ElementaryTypeName",
+                        "src": "201:6:3"
+                      }
+                    ],
+                    "id": 643,
+                    "name": "VariableDeclaration",
+                    "src": "201:6:3"
+                  }
+                ],
+                "id": 644,
+                "name": "ParameterList",
+                "src": "192:16:3"
+              }
+            ],
+            "id": 645,
+            "name": "FunctionDefinition",
+            "src": "144:65:3"
+          }
+        ],
+        "id": 646,
+        "name": "ContractDefinition",
+        "src": "110:101:3"
+      }
+    ],
+    "id": 647,
+    "name": "SourceUnit",
+    "src": "32:179:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.7.6+commit.7338295f.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-03-16T16:01:40.759Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
