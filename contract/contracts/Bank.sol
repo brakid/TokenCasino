@@ -4,9 +4,9 @@ pragma solidity ^0.7.4;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./CasinoToken.sol";
+import "./Owned.sol";
 
-contract Bank {
-  address public admin;
+contract Bank is Owned {
   IERC20 public usdc;
   CasinoToken public casinoToken;
   uint public conversionNominator;
@@ -28,14 +28,12 @@ contract Bank {
   );
 
   constructor(address usdcAddress, uint initialConversionNominator, uint initialConversionDenominator) {
-    admin = msg.sender;
     usdc = IERC20(usdcAddress);
     conversionNominator = initialConversionNominator;
     conversionDenominator = initialConversionDenominator;
   }
 
-  function setCasinoToken(address casinoTokenAddress) external {
-    require(msg.sender == admin, 'Only the admin is allowed to call this operation');
+  function setCasinoToken(address casinoTokenAddress) external onlyAdmin {
     require(casinoTokenAddress != address(0), 'Casino Token address must not be the 0x0 address');
     casinoToken = CasinoToken(casinoTokenAddress);
     require(casinoToken.isAdmin() == true, 'Requiring bank to be owner of the Casino Token');
@@ -54,8 +52,7 @@ contract Bank {
     casinoToken.mint(msg.sender, casinoTokenCount);
   }
 
-  function casinoBuyIn(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external {
-    require(msg.sender == admin, 'Only the admin is allowed to call this operation');
+  function casinoBuyIn(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external onlyAdmin {
     require(casinoTokenCount > 0, 'Positive token requests only');
     uint usdcAmount = convertToUsdc(casinoTokenCount);
     usdc.transferFrom(casinoAdmin, address(this), usdcAmount); // lock USDC in this contract
@@ -71,8 +68,7 @@ contract Bank {
     usdc.transfer(msg.sender, usdcAmount);
   }
 
-  function casinoCashOut(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external {
-    require(msg.sender == admin, 'Only the admin is allowed to call this operation');
+  function casinoCashOut(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external onlyAdmin {
     require(casinoTokenCount > 0, 'Positive token withdrawals only');
     casinoToken.burn(casinoAddress, casinoTokenCount);
     uint usdcAmount = convertToUsdc(casinoTokenCount);

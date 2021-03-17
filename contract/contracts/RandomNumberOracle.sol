@@ -3,22 +3,20 @@ pragma solidity ^0.7.4;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./IRandomNumberOracle.sol";
+import "./Owned.sol";
 
-contract RandomNumberOracle is IRandomNumberOracle {
+contract RandomNumberOracle is IRandomNumberOracle, Owned {
   event SeedUpdated (
     uint date
   );
 
-  address public admin;
   uint32 private _seed;
 
   constructor(uint32 initialSeed) {
-    admin = msg.sender;
     _seed = initialSeed; 
   }
 
-  function setSeed(uint32 newSeed) external {
-    require(msg.sender == admin, 'Only the admin is allowed to call this operation');
+  function setSeed(uint32 newSeed) external onlyAdmin {
     emit SeedUpdated(block.timestamp);
     _seed = newSeed;
   }
