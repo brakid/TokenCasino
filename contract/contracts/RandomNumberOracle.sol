@@ -17,13 +17,13 @@ contract RandomNumberOracle is IRandomNumberOracle {
     _seed = initialSeed; 
   }
 
-  function setSeed(uint32 newSeed) public {
+  function setSeed(uint32 newSeed) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     emit SeedUpdated(block.timestamp);
     _seed = newSeed;
   }
 
-  function getRandomNumberPair() public override returns (uint32, uint32) {
+  function getRandomNumberPair() external override returns (uint32, uint32) {
     return (getRandomNumber(), getRandomNumber());
   }
 

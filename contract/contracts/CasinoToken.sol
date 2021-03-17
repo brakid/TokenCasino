@@ -11,22 +11,22 @@ contract CasinoToken is ERC20 {
     _setupDecimals(0); //token is no divisible
   }
 
-  function isAdmin() public view returns (bool) {
+  function isAdmin() external view returns (bool) {
     return admin == msg.sender;
   }
 
-  function setAdmin(address newAdmin) public {
+  function setAdmin(address newAdmin) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     require(newAdmin != address(0), 'New admin must not be the 0x0 address');
     admin = newAdmin;
   }
 
-  function mint(address to, uint amount) public {
+  function mint(address to, uint amount) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     _mint(to, amount);
   }
 
-  function burn(address from, uint amount) public {
+  function burn(address from, uint amount) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     _burn(from, amount);
   }

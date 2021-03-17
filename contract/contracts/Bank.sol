@@ -11,7 +11,7 @@ contract Bank {
   CasinoToken public casinoToken;
   uint public conversionNominator;
   uint public conversionDenominator;
-  uint usdcConversion = 10**6;
+  uint public usdcConversion = 10**6;
 
   event BuyIn (
     address player,
@@ -34,18 +34,18 @@ contract Bank {
     conversionDenominator = initialConversionDenominator;
   }
 
-  function setCasinoToken(address casinoTokenAddress) public {
+  function setCasinoToken(address casinoTokenAddress) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     require(casinoTokenAddress != address(0), 'Casino Token address must not be the 0x0 address');
     casinoToken = CasinoToken(casinoTokenAddress);
     require(casinoToken.isAdmin() == true, 'Requiring bank to be owner of the Casino Token');
   }
 
-  function getConversionFactor() public view returns (uint, uint) {
+  function getConversionFactor() external view returns (uint, uint) {
     return (conversionNominator, conversionDenominator);
   }
 
-  function buyIn(uint casinoTokenCount) public {
+  function buyIn(uint casinoTokenCount) external {
     require(casinoTokenCount > 0, 'Positive token requests only');
     uint usdcAmount = convertToUsdc(casinoTokenCount);
     require(usdcAmount <= SafeMath.mul(100, usdcConversion), 'At most 100 USDC can be exchanged');
@@ -54,7 +54,7 @@ contract Bank {
     casinoToken.mint(msg.sender, casinoTokenCount);
   }
 
-  function casinoBuyIn(address casinoAddress, address casinoAdmin, uint casinoTokenCount) public {
+  function casinoBuyIn(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     require(casinoTokenCount > 0, 'Positive token requests only');
     uint usdcAmount = convertToUsdc(casinoTokenCount);
@@ -63,7 +63,7 @@ contract Bank {
     casinoToken.mint(casinoAddress, casinoTokenCount);
   }
 
-  function cashOut(uint casinoTokenCount) public {
+  function cashOut(uint casinoTokenCount) external {
     require(casinoTokenCount > 0, 'Positive token withdrawals only');
     casinoToken.burn(msg.sender, casinoTokenCount);
     uint usdcAmount = convertToUsdc(casinoTokenCount);
@@ -71,7 +71,7 @@ contract Bank {
     usdc.transfer(msg.sender, usdcAmount);
   }
 
-  function casinoCashOut(address casinoAddress, address casinoAdmin, uint casinoTokenCount) public {
+  function casinoCashOut(address casinoAddress, address casinoAdmin, uint casinoTokenCount) external {
     require(msg.sender == admin, 'Only the admin is allowed to call this operation');
     require(casinoTokenCount > 0, 'Positive token withdrawals only');
     casinoToken.burn(casinoAddress, casinoTokenCount);

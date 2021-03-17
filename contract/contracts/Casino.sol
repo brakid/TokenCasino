@@ -32,7 +32,7 @@ contract Casino {
     maxBetAmount = maxBet;
   }
 
-  function play(uint bet) public {
+  function play(uint bet) external {
     require(getCasinoBalance() >= bet && bet <= maxBetAmount, 'Bet is too large');
     require(casinoToken.balanceOf(msg.sender) >= bet, 'Bet exceeds players balance');
     require(casinoToken.allowance(msg.sender, address(this)) >= bet, 'Bet exceeds players allowance');
