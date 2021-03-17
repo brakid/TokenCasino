@@ -72,4 +72,8 @@ describe('Casino', async () => {
     await casinoToken.mint(casino.address, 60, { from: adminAddress });
     await expectRevert(casino.play(20, { from: recipientAddress }), 'Bet is too large');
   });
+
+  it('should reject bet when amount exceeds players balance', async () => {
+    await expectRevert(casino.play(10, { from: recipientAddress }), 'Bet exceeds players allowance');
+  });
 });

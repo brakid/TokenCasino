@@ -34,6 +34,8 @@ contract Casino {
 
   function play(uint bet) public {
     require(getCasinoBalance() >= bet && bet <= maxBetAmount, 'Bet is too large');
+    require(casinoToken.balanceOf(msg.sender) >= bet, 'Bet exceeds players balance');
+    require(casinoToken.allowance(msg.sender, address(this)) >= bet, 'Bet exceeds players allowance');
 
     (uint32 casinoValue, uint32 playerValue) = randomNumberOracle.getRandomNumberPair();
 
