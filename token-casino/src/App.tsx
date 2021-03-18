@@ -1,31 +1,28 @@
-import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import { getBlockchain } from './ethereum';
-import Store from './Store';
-import { Blockchain } from './utils/types';
+import Header from './Header';
+import { getContracts } from './utils/contracts';
+import { getMetamaskProvider, getWebsocketProvider } from './utils/ethereum';
+import { EthereumData, Contracts, Providers } from './utils/types';
 
-export interface BlockchainContextData {
-  blockchain?: Blockchain,
-  blockNumber: number,
-};
-
-export const BlockchainContext = React.createContext<BlockchainContextData>({ blockNumber: 0 });
+export const EthereumContext = React.createContext<EthereumData<Contracts>>({ blockNumber: -1});
 
 const App = () => {
-  const [ blockchain, setBlockchain ] = useState<Blockchain>();
-  const [ blockNumber, setBlocknumber ] = useState<number>(0);
+  const [ providers, setProviders ] = useState<Providers>();
+  const [ blockNumber, setBlocknumber ] = useState<number>(-1);
+  const [ contracts, setContracts ] = useState<Contracts>();
 
   useEffect(() => {
     const init = async () => {
-      const blockchain = await getBlockchain();
+      const metamaskProvider = await getMetamaskProvider();
+      const websocketProvider = await getWebsocketProvider();
 
-      setBlockchain(blockchain);
-      
-      const provider = new ethers.providers.WebSocketProvider('ws://127.0.0.1:9545/');
-      setBlocknumber(await provider.getBlockNumber());
-      provider.on('block', (latestBlockNumber) => {
+      setBlocknumber(await websocketProvider.getBlockNumber());
+      websocketProvider.on('block', (latestBlockNumber) => {
         setBlocknumber(latestBlockNumber);
       });
+
+      setProviders({ metamaskProvider, websocketProvider });
+      setContracts(getContracts(metamaskProvider));
     };
 
     init();
@@ -34,10 +31,14 @@ const App = () => {
   return (
     <div>
       <h1>Token Store</h1>
-      <BlockchainContext.Provider value={ { blockchain, blockNumber} }>
-        <Store />
-        <p>Blocknumber: { blockNumber }</p>
-      </BlockchainContext.Provider>
+      <EthereumContext.Provider value={ { ...providers, data: contracts, blockNumber } }>
+        <Header />
+        <Bank />
+        <Casino />
+        <footer>
+          <span>Blocknumber: { blockNumber }</span>
+        </footer>
+      </EthereumContext.Provider>
     </div>
   );
 }

@@ -1,0 +1,3 @@
+export const WEBSOCKET_ADDRESS = 'ws://127.0.0.1:9545/';
+export const USDC_ADDRESS = '0xF9f07d01fC17F2e987D49b97020FF79A1e9AB240';
+export const NETWORK = 5777;
