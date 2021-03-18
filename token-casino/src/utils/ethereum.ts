@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { WEBSOCKET_ADDRESS } from './externals';
 
-export const getMetamaskProvider = async (): Promise<ethers.providers.Web3Provider> => {
+export const getWeb3Provider = async (): Promise<ethers.providers.Web3Provider> => {
   return new Promise((resolve) => {
     window.addEventListener('load', async () => {
       const windowElement: { [key: string]: any } = window;

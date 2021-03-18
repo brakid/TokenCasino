@@ -1,45 +1,72 @@
+import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
+import Bank from './Bank';
 import Header from './Header';
 import { getContracts } from './utils/contracts';
-import { getMetamaskProvider, getWebsocketProvider } from './utils/ethereum';
-import { EthereumData, Contracts, Providers } from './utils/types';
+import { getWeb3Provider, getWebsocketProvider } from './utils/ethereum';
+import { EthereumData, Contracts, Providers, Block } from './utils/types';
 
-export const EthereumContext = React.createContext<EthereumData<Contracts>>({ blockNumber: -1});
+export const defaultBlock: Block = {
+  blockNumber: -1,
+  timestamp: new Date(),
+};
+
+const getBlock = async (websocketProvider: ethers.providers.WebSocketProvider): Promise<Block> => {
+  return new Promise(async (resolve) => {
+    resolve({
+      blockNumber: await websocketProvider.getBlockNumber(),
+      timestamp: new Date(),
+    })
+  })
+}
+
+export const EthereumContext = React.createContext<EthereumData<Contracts>>({ block: defaultBlock });
 
 const App = () => {
   const [ providers, setProviders ] = useState<Providers>();
-  const [ blockNumber, setBlocknumber ] = useState<number>(-1);
+  const [ address, setAddress ] = useState<string>();
+  const [ block, setBlock ] = useState<Block>(defaultBlock);
   const [ contracts, setContracts ] = useState<Contracts>();
 
   useEffect(() => {
     const init = async () => {
-      const metamaskProvider = await getMetamaskProvider();
+      const web3Provider = await getWeb3Provider();
       const websocketProvider = await getWebsocketProvider();
 
-      setBlocknumber(await websocketProvider.getBlockNumber());
+      setBlock({
+        blockNumber: await websocketProvider.getBlockNumber(),
+        timestamp: new Date(),
+      });
       websocketProvider.on('block', (latestBlockNumber) => {
-        setBlocknumber(latestBlockNumber);
+        setBlock({
+          blockNumber: latestBlockNumber,
+          timestamp: new Date()
+        });
       });
 
-      setProviders({ metamaskProvider, websocketProvider });
-      setContracts(getContracts(metamaskProvider));
+      setInterval(async () => {
+        setBlock({
+          blockNumber: await websocketProvider.getBlockNumber(),
+          timestamp: new Date(),
+        });
+      }, 5000);
+
+      setProviders({ web3Provider, websocketProvider });
+      setAddress(await web3Provider.getSigner().getAddress());
+      setContracts(getContracts(web3Provider));
     };
 
     init();
   }, []);
 
   return (
-    <div>
-      <h1>Token Store</h1>
-      <EthereumContext.Provider value={ { ...providers, data: contracts, blockNumber } }>
-        <Header />
-        <Bank />
-        <Casino />
-        <footer>
-          <span>Blocknumber: { blockNumber }</span>
-        </footer>
-      </EthereumContext.Provider>
-    </div>
+    <EthereumContext.Provider value={ { ...providers, address, data: contracts, block } }>
+      <Header />
+      <Bank />
+      <footer>
+        <span>Blocknumber: { block.blockNumber } - { block.timestamp.toLocaleTimeString() }</span>
+      </footer>
+    </EthereumContext.Provider>
   );
 }
 

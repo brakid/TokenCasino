@@ -1,12 +1,18 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from 'ethers';
 
 export interface Providers {
-  metamaskProvider?: ethers.providers.Web3Provider,
+  web3Provider?: ethers.providers.Web3Provider,
   websocketProvider?: ethers.providers.WebSocketProvider,
 };
 
-export interface EthereumData<T> extends Providers {
+export interface Block {
   blockNumber: number,
+  timestamp: Date,
+}
+
+export interface EthereumData<T> extends Providers {
+  address?: string,
+  block: Block,
   data?: T,
 };
 
@@ -15,11 +21,4 @@ export interface Contracts {
   casinoToken: ethers.Contract,
   bank: ethers.Contract,
   casino: ethers.Contract,
-}
-
-export interface Wallet {
-  readonly address: string,
-  readonly ethereumBalance: BigNumber,
-  readonly usdcBalance: BigNumber,
-  readonly allowance: BigNumber,
 };

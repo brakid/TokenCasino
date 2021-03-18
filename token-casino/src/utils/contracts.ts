@@ -6,8 +6,8 @@ import * as casinoToken from '../abis/CasinoToken.json';
 import * as erc20 from '../abis/ERC20.json';
 import { Contracts } from './types';
 
-export const getContracts = (metamaskProvider: ethers.providers.Web3Provider): Contracts => {
-  const signer = metamaskProvider.getSigner();
+export const getContracts = (web3Provider: ethers.providers.Web3Provider): Contracts => {
+  const signer = web3Provider.getSigner();
 
   return {
     usdc: new ethers.Contract(
