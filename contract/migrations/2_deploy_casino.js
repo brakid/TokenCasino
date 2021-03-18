@@ -16,22 +16,22 @@ module.exports = async (deployer, network, addresses) => {
     await usdcMock.faucet(player1, web3.utils.toWei('1000'));
     await usdcMock.faucet(player2, web3.utils.toWei('1000'));
 
-    await deployer.deploy(Bank, usdcMock, 2, 1, { from: bankAdmin }); // 2 CasinoToken = 1 USDC
+    await deployer.deploy(Bank, usdcMock.address, 2, 1, { from: bankAdmin }); // 2 CasinoToken = 1 USDC
     const bank = await Bank.deployed();
 
     await deployer.deploy(CasinoToken, { from: bankAdmin });
     const casinoToken = await CasinoToken.deployed();
-    await casinoToken.setAdmin(bank, { from: bankAdmin });
-    await bank.setCasinoToken(casinoToken, { from: bankAdmin });
+    await casinoToken.setAdmin(bank.address, { from: bankAdmin });
+    await bank.setCasinoToken(casinoToken.address, { from: bankAdmin });
 
     await deployer.deploy(RandomNumberOracle, randomSeed, { from: randomAdmin });
     const randomNumberGenerator = await RandomNumberOracle.deployed();
 
-    await deployer.deployed(Casino, bank, casinoToken, randomNumberGenerator, 2, 100, 100, { from: casinoAdmin });
+    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 100, 100, { from: casinoAdmin });
     const casino = await Casino.deployed();
 
-    await usdcMock.approve(bank, web3.utils.toWei('250'), { from: casinoAdmin }); // Casino buy in
-    await bank.casinoBuyIn(casino, casinoAdmin, 500);
+    await usdcMock.approve(bank.address, web3.utils.toWei('250'), { from: casinoAdmin }); // Casino buy in
+    await bank.casinoBuyIn(casino.address, casinoAdmin, 500);
   } else {
     const BANK_ADMIN_ADDRESS = '';
     const CASINO_ADMIN_ADDRESS = '';
@@ -43,16 +43,16 @@ module.exports = async (deployer, network, addresses) => {
 
     await deployer.deploy(CasinoToken, { from: BANK_ADMIN_ADDRESS });
     const casinoToken = await CasinoToken.deployed();
-    await casinoToken.setAdmin(bank, { from: BANK_ADMIN_ADDRESS });
-    await bank.setCasinoToken(casinoToken, { from: bankAdmin });
+    await casinoToken.setAdmin(bank.address, { from: BANK_ADMIN_ADDRESS });
+    await bank.setCasinoToken(casinoToken.address, { from: BANK_ADMIN_ADDRESS });
 
     await deployer.deploy(RandomNumberOracle, randomSeed, { from: RANDOM_ADMIN_ADDRESS });
     const randomNumberGenerator = await RandomNumberOracle.deployed();
     
-    await deployer.deployed(Casino, CASINO_ADMIN_ADDRESS, casinoToken, randomNumberGenerator, 2, 100, 100);
+    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 100, 100, { from: CASINO_ADMIN_ADDRESS });
     const casino = await Casino.deployed();
 
-    await usdcMock.approve(bank, web3.utils.toWei('250'), { from: casinoAdmin }); // Casino buy in
-    await bank.casinoBuyIn(casino, casinoAdmin, 500);
+    await usdcMock.approve(bank.address, web3.utils.toWei('250'), { from: CASINO_ADMIN_ADDRESS }); // Casino buy in
+    await bank.casinoBuyIn(casino.address, CASINO_ADMIN_ADDRESS, 500);
   }
 };
