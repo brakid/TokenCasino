@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import Bank from './Bank';
 import Header from './Header';
@@ -10,15 +9,6 @@ export const defaultBlock: Block = {
   blockNumber: -1,
   timestamp: new Date(),
 };
-
-const getBlock = async (websocketProvider: ethers.providers.WebSocketProvider): Promise<Block> => {
-  return new Promise(async (resolve) => {
-    resolve({
-      blockNumber: await websocketProvider.getBlockNumber(),
-      timestamp: new Date(),
-    })
-  })
-}
 
 export const EthereumContext = React.createContext<EthereumData<Contracts>>({ block: defaultBlock });
 

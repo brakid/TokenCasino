@@ -21,12 +21,14 @@ module.exports = async (deployer, network, addresses) => {
     await deployer.deploy(RandomNumberOracle, randomSeed, { from: randomAdmin });
     const randomNumberGenerator = await RandomNumberOracle.deployed();
 
-    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 100, 100, { from: casinoAdmin });
+    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 50, 100, { from: casinoAdmin });
     const casino = await Casino.deployed();
-    await usdcMock.transfer(250 * 10**6, { from: casinoAdmin }); // Casino receives 250 USDC
+    
+    await usdcMock.approve(casinoToken.address, 250 * 10**6, { from: casinoAdmin }); // Casino buy in
+    await casinoToken.mint(500, { from: casinoAdmin });
+    await casinoToken.transfer(casino.address, 500, { from: casinoAdmin });
 
-    await usdcMock.approve(casinoToken.address, 250 * 10**6, { from: casino.address }); // Casino buy in
-    await casinoToken.mint(500, { from: casino.address });
+    console.log('Casino balance: ' + await casino.getCasinoBalance()); // should be 450 CAS
   } else {
     const CASINO_ADMIN_ADDRESS = '';
     const RANDOM_ADMIN_ADDRESS = '';
@@ -38,7 +40,7 @@ module.exports = async (deployer, network, addresses) => {
     await deployer.deploy(RandomNumberOracle, randomSeed, { from: RANDOM_ADMIN_ADDRESS });
     const randomNumberGenerator = await RandomNumberOracle.deployed();
     
-    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 100, 100, { from: CASINO_ADMIN_ADDRESS });
+    await deployer.deploy(Casino, casinoToken.address, randomNumberGenerator.address, 2, 50, 100, { from: CASINO_ADMIN_ADDRESS });
     const casino = await Casino.deployed();
   }
 };

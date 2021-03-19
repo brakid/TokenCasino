@@ -1,2 +1,4 @@
 #!/bin/bash
-cp -r ./contract/build/contracts/* ./token-casino/src/abis/
+rm -r ./token-casino/src/abis
+mkdir -p ./token-casino/src/abis
+cp ./contract/build/contracts/*.json ./token-casino/src/abis

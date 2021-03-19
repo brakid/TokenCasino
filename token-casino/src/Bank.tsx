@@ -10,16 +10,17 @@ const parseExchangeRate = (value: [BigNumber, BigNumber]): BigNumber => {
 }
 
 const usdcToCasinoToken = (usdcAmount: BigNumber, usdcDecimals: number, exchangeRate: BigNumber): BigNumber => {
-  console.log(usdcAmount.toString() + ' ' + usdcDecimals + ' ' + exchangeRate.toString());
   return usdcAmount.div(Math.pow(10, usdcDecimals)).mul(exchangeRate);
 }
 
 const ExchangeForm = ({ exchange, maximumAmount }: { exchange: (tokenAmount: BigNumber) => Promise<void>, maximumAmount: BigNumber }) => {
   const [ amount, setAmount ] = useState<string>('0');
 
+  console.log('Amount: ' + maximumAmount.toString());
+
   const onClick = async () => {
     const amountValue = BigNumber.from(amount);
-    if (amountValue.lte(maximumAmount) && amountValue.gt(BigNumber.from(0))) {
+    if (amountValue.gt(BigNumber.from(0))) {
       await exchange(amountValue);
     }
   }
@@ -45,7 +46,7 @@ const Bank = () => {
         setUsdcBalance(await getBalance(contracts.usdc, address, await contracts.casinoToken.decimals()));
         setUsdcDecimals(await contracts.usdc.decimals());
         setCasinoTokenBalance(await getBalance(contracts.casinoToken, address, 0));
-        setExchangeRate(parseExchangeRate(await contracts.bank.getConversionFactor()));
+        setExchangeRate(parseExchangeRate(await contracts.casinoToken.getConversionFactor()));
       }
     };
 
@@ -68,13 +69,13 @@ const Bank = () => {
 
     const usdcAmount = casinoTokenCount.mul(Math.pow(10, usdcDecimals)).div(exchangeRate);
     
-    const usdcAllowance: BigNumber = await contracts.usdc.allowance(address, contracts.bank.address);
+    const usdcAllowance: BigNumber = await contracts.usdc.allowance(address, contracts.casinoToken.address);
     if (usdcAllowance.lt(usdcAmount)) {
-      await increaseAllowance(contracts.usdc, contracts.bank.address, LARGE_ALLOWANCE);
+      await increaseAllowance(contracts.usdc, contracts.casinoToken.address, LARGE_ALLOWANCE);
     }
 
     try {
-      const transaction = contracts.bank.buyIn(casinoTokenCount);
+      const transaction = contracts.casinoToken.mint(casinoTokenCount);
       await transaction.wait();
     } catch (err) {
       console.log(JSON.stringify(err));
@@ -86,13 +87,8 @@ const Bank = () => {
       return;
     }
 
-    const casinoTokenAllowance: BigNumber = await contracts.usdc.allowance(address, contracts.bank.address);
-    if (casinoTokenAllowance.lt(casinoTokenCount)) {
-      await increaseAllowance(contracts.casinoToken, contracts.bank.address, LARGE_ALLOWANCE);
-    }
-
     try {
-      const transaction = contracts.bank.cashOut(casinoTokenCount);
+      const transaction = contracts.casinoToken.burn(casinoTokenCount);
       await transaction.wait();
     } catch (err) {
       console.log(JSON.stringify(err));
