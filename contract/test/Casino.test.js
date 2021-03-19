@@ -4,25 +4,48 @@ const { BN, expectEvent, expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expect } = require('chai');
 
+const UsdcMock = contract.fromArtifact('UsdcMock');
 const RandomNumberOracle = contract.fromArtifact('RandomNumberOracle');
 const CasinoToken = contract.fromArtifact('CasinoToken');
 const Casino = contract.fromArtifact('Casino');
 
 describe('Casino', async () => {
+  let usdcMock;
   let casino;
   let casinoToken;
   let randomNumberOracle;
   beforeEach(async () => {
+    usdcMock = await UsdcMock.new();
     randomNumberOracle = await RandomNumberOracle.new(1, { from: adminAddress });
-    casinoToken = await CasinoToken.new({ from: adminAddress });
-    casino = await Casino.new(casinoToken.address, randomNumberOracle.address, 2, 50, 100);
+    casinoToken = await CasinoToken.new(usdcMock.address, 2, 1);
+    casino = await Casino.new(casinoToken.address, randomNumberOracle.address, 2, 50, 100, { from: adminAddress });
 
-    await casinoToken.mint(casino.address, 200, { from: adminAddress });
-    await casinoToken.mint(recipientAddress, 200, { from: adminAddress });
+    await usdcMock.increaseAllowance(casinoToken.address, 100 * 10**6, { from: recipientAddress });
+    await usdcMock.faucet(recipientAddress, 100 * 10**6);
+    await casinoToken.mint(200, { from: recipientAddress });
+    
+    await usdcMock.increaseAllowance(casinoToken.address, 100 * 10**6, { from: adminAddress });
+    await usdcMock.faucet(adminAddress, 100 * 10**6);
+    await casinoToken.mint(200, { from: adminAddress });
+    await casinoToken.transfer(casino.address, 200, { from: adminAddress });
   });
 
   it('should get available casino balance (excluding safety amount)', async () => {
     expect(await casino.getCasinoBalance()).to.be.bignumber.equal(new BN(150));
+
+    expect(await casinoToken.balanceOf(casino.address)).to.be.bignumber.equal(new BN(200));
+    expect(await casinoToken.balanceOf(adminAddress)).to.be.bignumber.equal(new BN(0));
+  });
+
+  it('should transfer CasinoToken balance to admin', async () => {
+    await casino.transferBalance({ from: adminAddress });
+    
+    expect(await casinoToken.balanceOf(casino.address)).to.be.bignumber.equal(new BN(0));
+    expect(await casinoToken.balanceOf(adminAddress)).to.be.bignumber.equal(new BN(200));
+  });
+
+  it('should reject transferBalance if not called by the admin', async () => {
+    await expectRevert(casino.transferBalance({ from: otherAddress }), 'Only the admin is allowed to call this operation');
   });
 
   it('should accept bet 1', async () => {
@@ -68,8 +91,8 @@ describe('Casino', async () => {
   });
 
   it('should reject bet when amount exceeds safety amount', async () => {
-    await casinoToken.burn(casino.address, 200, { from: adminAddress }); // 40 remaining
-    await casinoToken.mint(casino.address, 60, { from: adminAddress });
+    await casino.transferBalance({ from: adminAddress });
+    await casinoToken.transfer(casino.address, 60, { from: adminAddress }); // balance: 60
     await expectRevert(casino.play(20, { from: recipientAddress }), 'Bet is too large');
   });
 

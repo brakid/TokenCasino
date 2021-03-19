@@ -4,8 +4,9 @@ pragma solidity ^0.7.4;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./CasinoToken.sol";
 import "./IRandomNumberOracle.sol";
+import "./Owned.sol";
 
-contract Casino {
+contract Casino is Owned {
   event PlayEvent (
     address player,
     uint bet,
@@ -16,15 +17,13 @@ contract Casino {
     uint date
   );
 
-  address public admin;
-  CasinoToken public casinoToken;
-  IRandomNumberOracle public randomNumberOracle;
-  uint public payoutFactor;
-  uint public safetyAmount;
-  uint public maxBetAmount;
+  CasinoToken public immutable casinoToken;
+  IRandomNumberOracle public immutable randomNumberOracle;
+  uint public immutable payoutFactor;
+  uint public immutable safetyAmount;
+  uint public immutable maxBetAmount;
   
   constructor(address casinoTokenAddress, address randomNumberOracleAddress, uint payout, uint safety, uint maxBet) {
-    admin = msg.sender;
     casinoToken = CasinoToken(casinoTokenAddress);
     randomNumberOracle = IRandomNumberOracle(randomNumberOracleAddress);
     payoutFactor = payout;
@@ -56,5 +55,11 @@ contract Casino {
 
   function getCasinoBalance() public view returns (uint) {
     return SafeMath.sub(casinoToken.balanceOf(address(this)), safetyAmount);
+  }
+
+  function transferBalance() external onlyAdmin {
+    uint balance = casinoToken.balanceOf(address(this));
+    require(balance > 0, 'Casino has no funds for CasinoToken');
+    casinoToken.transfer(admin, balance);
   }
 }

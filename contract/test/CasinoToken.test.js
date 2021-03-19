@@ -4,75 +4,79 @@ const { BN, expectEvent, expectRevert, constants } = require('@openzeppelin/test
 
 const { expect } = require('chai');
 
+const UsdcMock = contract.fromArtifact('UsdcMock');
 const CasinoToken = contract.fromArtifact('CasinoToken');
 
 describe('CasinoToken', async () => {
   let casinoToken;
+  let usdcMock;
   beforeEach(async () => {
-    casinoToken = await CasinoToken.new({ from: adminAddress });
+    usdcMock = await UsdcMock.new();
+    casinoToken = await CasinoToken.new(usdcMock.address, 2, 1);
   });
 
   it('should list the correct decimals', async () => {
     expect(await casinoToken.decimals()).to.be.bignumber.equal(new BN(0));
   });
 
-  it('should correctly determine who is the admin', async () => {
-    expect(await casinoToken.isAdmin({ from: adminAddress })).to.be.true;
-    expect(await casinoToken.isAdmin()).to.be.false;
-    expect(await casinoToken.isAdmin({ from: otherAddress })).to.be.false;
-  });
-
-  it('should correctly hand over the admin', async () => {
-    expect(await casinoToken.isAdmin({ from: adminAddress })).to.be.true;
-    expect(await casinoToken.isAdmin({ from: otherAddress })).to.be.false;
-
-    await casinoToken.setAdmin(otherAddress, { from: adminAddress });
-
-    expect(await casinoToken.isAdmin({ from: adminAddress })).to.be.false;
-    expect(await casinoToken.isAdmin({ from: otherAddress })).to.be.true;
-  });
-
-  it('should reject when the new admin is the 0x0 address', async () => {
-    await expectRevert(casinoToken.setAdmin(constants.ZERO_ADDRESS, { from: adminAddress }), 'New admin must not be the 0x0 address');
-  });
-
-  it('should reject when the caller is not the admin', async () => {
-    await expectRevert(casinoToken.setAdmin(recipientAddress, { from: otherAddress }), 'Only the admin is allowed to call this operation');
-    await expectRevert(casinoToken.mint(recipientAddress, 10, { from: otherAddress }), 'Only the admin is allowed to call this operation');
-    await expectRevert(casinoToken.burn(recipientAddress, 10, { from: otherAddress }), 'Only the admin is allowed to call this operation');
-  });
-
-  it('should mint when called by admin', async () => {
-    const receipt = await casinoToken.mint(recipientAddress, 10, { from: adminAddress });
+  it('should mint when called with an amount larger than 0', async () => {
+    await usdcMock.increaseAllowance(casinoToken.address, 100 * 10**6, { from: recipientAddress });
+    await usdcMock.faucet(recipientAddress, 100 * 10**6);
     
-    expectEvent(receipt, 'Transfer', {
-      from: constants.ZERO_ADDRESS,
-      to: recipientAddress,
-      value: new BN(10),
+    const receipt = await casinoToken.mint(10, { from: recipientAddress });
+    
+    expectEvent(receipt, 'Mint', {
+      targetAddress: recipientAddress,
+      usdcAmount: new BN(5 * 10**6),
+      casinoTokenCount: new BN(10),
     });
     
     expect(await casinoToken.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(10));
+    expect(await usdcMock.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(95 * 10**6));
+    expect(await usdcMock.balanceOf(casinoToken.address)).to.be.bignumber.equal(new BN(5 * 10 ** 6));
+    expect(await casinoToken.totalSupply()).to.be.bignumber.equal(new BN(10));
   });
 
-  it('should burn when called by admin', async () => {
-    await casinoToken.mint(recipientAddress, 10, { from: adminAddress });
+  it('should reject mint when allowance is not sufficient', async () => {
+    await usdcMock.faucet(recipientAddress, 100 * 10**6);
 
-    const receipt = await casinoToken.burn(recipientAddress, 10, { from: adminAddress });
+    await expectRevert(casinoToken.mint(10, { from: recipientAddress }), 'ERC20: transfer amount exceeds allowance');
+  });
+
+  it('should reject mint when USDC balance is not sufficient', async () => {
+    await usdcMock.increaseAllowance(casinoToken.address, 100 * 10**6, { from: recipientAddress });
     
-    expectEvent(receipt, 'Transfer', {
-      from: recipientAddress,
-      to: constants.ZERO_ADDRESS,
-      value: new BN(10),
+    await expectRevert(casinoToken.mint(10, { from: recipientAddress }), 'ERC20: transfer amount exceeds balance');
+  });
+
+  it('should reject mint when called with an amount equal to 0', async () => {
+    await expectRevert(casinoToken.mint(0, { from: recipientAddress }), 'Positive token requests only');
+  });
+
+  it('should burn when called with an amount larger than 0', async () => {
+    await usdcMock.increaseAllowance(casinoToken.address, 100 * 10**6, { from: recipientAddress });
+    await usdcMock.faucet(recipientAddress, 100 * 10**6);
+    await casinoToken.mint(10, { from: recipientAddress });
+    expect(await casinoToken.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(10));
+    expect(await usdcMock.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(95 * 10**6));
+    expect(await usdcMock.balanceOf(casinoToken.address)).to.be.bignumber.equal(new BN(5 * 10 ** 6));
+    expect(await casinoToken.totalSupply()).to.be.bignumber.equal(new BN(10));
+
+    const receipt = await casinoToken.burn(10, { from: recipientAddress });
+    
+    expectEvent(receipt, 'Burn', {
+      targetAddress: recipientAddress,
+      usdcAmount: new BN(5 * 10**6),
+      casinoTokenCount: new BN(10),
     });
     
     expect(await casinoToken.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(0));
+    expect(await usdcMock.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(100 * 10**6));
+    expect(await usdcMock.balanceOf(casinoToken.address)).to.be.bignumber.equal(new BN(0));
+    expect(await casinoToken.totalSupply()).to.be.bignumber.equal(new BN(0));
   });
 
-  it('should reject when burn amount is larger than balance', async () => {
-    await casinoToken.mint(recipientAddress, 1, { from: adminAddress });
-    
-    await expectRevert(casinoToken.burn(recipientAddress, 10, { from: adminAddress }), 'ERC20: burn amount exceeds balance');
-    
-    expect(await casinoToken.balanceOf(recipientAddress)).to.be.bignumber.equal(new BN(1));
+  it('should reject burn when called with an amount equal to 0', async () => {
+    await expectRevert(casinoToken.burn(0, { from: recipientAddress }), 'Positive token withdrawals only');
   });
 });

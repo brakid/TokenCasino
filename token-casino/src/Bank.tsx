@@ -9,6 +9,29 @@ const parseExchangeRate = (value: [BigNumber, BigNumber]): BigNumber => {
   return nominator.div(denominator);
 }
 
+const usdcToCasinoToken = (usdcAmount: BigNumber, usdcDecimals: number, exchangeRate: BigNumber): BigNumber => {
+  console.log(usdcAmount.toString() + ' ' + usdcDecimals + ' ' + exchangeRate.toString());
+  return usdcAmount.div(Math.pow(10, usdcDecimals)).mul(exchangeRate);
+}
+
+const ExchangeForm = ({ exchange, maximumAmount }: { exchange: (tokenAmount: BigNumber) => Promise<void>, maximumAmount: BigNumber }) => {
+  const [ amount, setAmount ] = useState<string>('0');
+
+  const onClick = async () => {
+    const amountValue = BigNumber.from(amount);
+    if (amountValue.lte(maximumAmount) && amountValue.gt(BigNumber.from(0))) {
+      await exchange(amountValue);
+    }
+  }
+
+  return (
+    <div>
+      <input type='text' value= { amount } onChange={ (e) => setAmount(e.target.value) } placeholder='CasinoTokens to exchange' />
+      <button onClick={ (e) => onClick() }>Buy Casino Tokens</button>
+    </div>
+  );
+}
+
 const Bank = () => {
   const { address, block, data: contracts }  = useContext<EthereumData<Contracts>>(EthereumContext);
   const [ exchangeRate, setExchangeRate ] = useState<BigNumber>(BigNumber.from(1));
@@ -56,8 +79,6 @@ const Bank = () => {
     } catch (err) {
       console.log(JSON.stringify(err));
     }
-
-
   }
 
   const cashOut = async (casinoTokenCount: BigNumber) => {
@@ -82,7 +103,7 @@ const Bank = () => {
     <section>
       <h2>Casino Token Bank</h2>
       <p>Exchange USDC with CasinoTokens, the exchange rate is: { exchangeRate.toString() } CasinoTokens per USDC</p>
-      <button onClick={ (e) => buyIn(BigNumber.from(10)) }>Buy Casino Tokens</button>
+      <ExchangeForm exchange={ buyIn } maximumAmount={ usdcToCasinoToken(usdcBalance, usdcDecimals, exchangeRate) } />
       <button onClick={ (e) => cashOut(casinoTokenBalance) }>Exchange Casino Tokens for USDC</button>
     </section>
   );
