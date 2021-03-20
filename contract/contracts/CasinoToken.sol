@@ -11,14 +11,14 @@ contract CasinoToken is ERC20 {
   uint private constant usdcConversion = 10**6;
 
   event Mint (
-    address targetAddress,
+    address indexed targetAddress,
     uint usdcAmount,
     uint casinoTokenCount,
     uint date
   );
 
   event Burn (
-    address targetAddress,
+    address indexed targetAddress,
     uint usdcAmount,
     uint casinoTokenCount,
     uint date
@@ -40,16 +40,16 @@ contract CasinoToken is ERC20 {
     uint usdcAmount = convertToUsdc(casinoTokenCount);
     require(usdcAmount <= SafeMath.mul(1000, usdcConversion), 'At most 1000 USDC can be exchanged');
     usdc.transferFrom(msg.sender, address(this), usdcAmount); // lock USDC in this contract
-    emit Mint(msg.sender, usdcAmount, casinoTokenCount, block.timestamp);
     _mint(msg.sender, casinoTokenCount);
+    emit Mint(msg.sender, usdcAmount, casinoTokenCount, block.timestamp);
   }
 
   function burn(uint casinoTokenCount) external {
     require(casinoTokenCount > 0, 'Positive token withdrawals only');
     _burn(msg.sender, casinoTokenCount);
     uint usdcAmount = convertToUsdc(casinoTokenCount);
-    emit Burn(msg.sender, usdcAmount, casinoTokenCount, block.timestamp);
     usdc.transfer(msg.sender, usdcAmount);
+    emit Burn(msg.sender, usdcAmount, casinoTokenCount, block.timestamp);
   }
 
   function convertToUsdc(uint casinoTokenCount) public view returns (uint) {

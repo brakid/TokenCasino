@@ -8,7 +8,7 @@ import "./Owned.sol";
 
 contract Casino is Owned {
   event PlayEvent (
-    address player,
+    address indexed player,
     uint bet,
     uint payout,
     bool hasPlayerWon,
@@ -44,13 +44,13 @@ contract Casino is Owned {
     bool hasPlayerWon = casinoCard < playerCard;
     uint payout = hasPlayerWon ? SafeMath.mul(bet, payoutFactor) : 0;
 
-    emit PlayEvent(msg.sender, bet, payout, hasPlayerWon, casinoCard, playerCard, block.timestamp);
-
     if (payout > 0) {
       casinoToken.transfer(msg.sender, SafeMath.sub(payout, bet));
     } else {
       casinoToken.transferFrom(msg.sender, address(this), bet);
     }
+
+    emit PlayEvent(msg.sender, bet, payout, hasPlayerWon, casinoCard, playerCard, block.timestamp);
   }
 
   function getCasinoBalance() public view returns (uint) {

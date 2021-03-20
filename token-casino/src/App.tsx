@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Bank from './Bank';
+import Casino from './Casino';
+import CasinoTokenExchange from './CasinoTokenExchange';
 import Header from './Header';
 import { getContracts } from './utils/contracts';
 import { getWeb3Provider, getWebsocketProvider } from './utils/ethereum';
@@ -39,7 +40,7 @@ const App = () => {
           blockNumber: await websocketProvider.getBlockNumber(),
           timestamp: new Date(),
         });
-      }, 5000);
+      }, 2000);
 
       setProviders({ web3Provider, websocketProvider });
       setAddress(await web3Provider.getSigner().getAddress());
@@ -52,7 +53,8 @@ const App = () => {
   return (
     <EthereumContext.Provider value={ { ...providers, address, data: contracts, block } }>
       <Header />
-      <Bank />
+      <CasinoTokenExchange />
+      <Casino />
       <footer>
         <span>Blocknumber: { block.blockNumber } - { block.timestamp.toLocaleTimeString() }</span>
       </footer>
