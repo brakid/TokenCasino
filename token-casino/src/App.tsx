@@ -53,10 +53,15 @@ const App = () => {
   return (
     <EthereumContext.Provider value={ { ...providers, address, data: contracts, block } }>
       <Header />
-      <CasinoTokenExchange />
-      <Casino />
-      <footer>
-        <span>Blocknumber: { block.blockNumber } - { block.timestamp.toLocaleTimeString() }</span>
+      <main role='main'>
+        <CasinoTokenExchange />
+        <Casino />
+      </main>
+      <footer className='container'>
+        <div className='d-flex justify-content-between'>
+          <span>Blocknumber: { block.blockNumber }</span>
+          <span>&copy; Hagen Schupp 2021</span>
+        </div>
       </footer>
     </EthereumContext.Provider>
   );

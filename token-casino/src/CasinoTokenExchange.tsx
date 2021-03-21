@@ -92,11 +92,11 @@ const ExchangeUsdcForCasinoToken = () => {
   };
 
   return (
-    <article>
+    <article className='col-md-6'>
       { showErrors(errors) }
-      <label htmlFor='usdcToCas'>Exchange 1 USDC for { exchangeRate.toString() } CasinoToken. You can get at most { maximumCasinoTokenCount.toString() } CasinoToken.</label><br />
-      <input id='usdcToCas' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
-      <button onClick={ (e) => mintCasinoToken() } disabled={ waiting }>Buy Casino Tokens</button>
+      <label htmlFor='usdcToCas'>Exchange 1 USDC for { exchangeRate.toString() } CasinoToken.<br />You can get at most { maximumCasinoTokenCount.toString() } CasinoToken.</label><br />
+      <input className='form-control' id='usdcToCas' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
+      <button className='btn btn-primary' onClick={ (e) => mintCasinoToken() } disabled={ waiting }>Buy Casino Tokens</button>
     </article>
   );
 }
@@ -159,21 +159,22 @@ const ExchangeCasinoTokenForUsdc = () => {
   };
 
   return (
-    <article>
+    <article className='col-md-6'>
       { showErrors(errors) }
-      <label htmlFor='casToUsdc'>Exchange { exchangeRate.toString() } CasinoToken for 1 USDC. You can change at most { casinoTokenCount.toString() } CasinoToken.</label><br />
-      <input id='casToUsdc' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
-      <button onClick={ (e) => burnCasinoToken() } disabled={ waiting }>Sell CasinoToken</button>
+      <label htmlFor='casToUsdc'>Exchange { exchangeRate.toString() } CasinoToken for 1 USDC.<br />You can change at most { casinoTokenCount.toString() } CasinoToken.</label><br />
+      <input className='form-control' id='casToUsdc' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
+      <button className='btn btn-primary' onClick={ (e) => burnCasinoToken() } disabled={ waiting }>Sell CasinoToken</button>
     </article>
   );
 }
 
 const CasinoTokenExchange = () => {
   return (
-    <section>
-      <h2>CasinoToken Exchange</h2>
-      <ExchangeUsdcForCasinoToken />
-      <ExchangeCasinoTokenForUsdc />
+    <section className='container my-5'>
+      <div className='row'>
+        <ExchangeUsdcForCasinoToken />
+        <ExchangeCasinoTokenForUsdc />
+      </div>
     </section>
   );
 }

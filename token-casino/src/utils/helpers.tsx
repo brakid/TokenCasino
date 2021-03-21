@@ -8,6 +8,9 @@ export const showErrors = (errors: string[]): JSX.Element | null => {
   }
 
   return (
-    <div><b>Errors:</b> { errors.join(', ') }</div>
+    <div className='alert alert-danger' role='alert'>
+      <b>Errors: </b>
+      { errors.join(', ') }
+    </div>
   );
 }

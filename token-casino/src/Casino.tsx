@@ -109,18 +109,25 @@ const Casino = () => {
   };
 
   return (
-    <section>
-      <h2>Casino</h2>
-      { showErrors(errors) }
-      { !!!playEvent && (<>
-        <label htmlFor='bet'>Max bet amount: { maxBetAmount.toString() }, Casino Balance: { casinoBalance.toString() } CAS.</label><br />
-        <input id='bet' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
-        <button onClick={ (e) => placeBet() } disabled={ waiting } >Place Bet &amp; Play</button>
-      </>) }
-      { playEvent && (<>
-        <PlayEventElement playEvent={ playEvent } />
-        <button onClick={ (e) => setPlayEvent(undefined) }>Play again</button>
-      </>) }
+    <section className='container my-5'>
+      <div className='row justify-content-md-center'>
+        <div className='col-8'>
+          <h2>Casino</h2>
+          { showErrors(errors) }
+          { !!!playEvent && (<>
+            <label htmlFor='bet'>Max bet amount: { maxBetAmount.toString() }, Casino Balance: { casinoBalance.toString() } CAS.</label><br />
+            <input className='form-control' id='bet' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to bet' />
+            <button className='btn btn-primary' onClick={ (e) => placeBet() } disabled={ waiting } >Place Bet &amp; Play</button>
+          </>) }
+          { waiting && (<div className='d-flex justify-content-center'>
+            <div className='spinner-grow text-primary' role='status'></div>
+          </div>) }
+          { playEvent && (<>
+            <PlayEventElement playEvent={ playEvent } />
+            <button className='btn btn-primary' onClick={ (e) => setPlayEvent(undefined) }>Play again</button>
+          </>) }
+        </div>
+      </div>
     </section>
   );
 }
