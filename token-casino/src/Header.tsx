@@ -28,11 +28,14 @@ const Header = () => {
         <div className='navbar-header'>
           <a className='navbar-brand' href='#'><i className='fas fa-coins'></i>&nbsp;&nbsp;Token Casino</a>
         </div>
-        <div className='nav text-light'>
-          <div className='col-6-md mr-md-5'><i className='fas fa-wallet'></i> Wallet address: <small>{ address }</small></div>
-          <div className='col-6-md row'>
-            <div className='col-12'>USDC Balance: { ethers.utils.formatUnits(usdcBalance, usdcDecimals) } USDC</div>
-            <div className='col-12'>Casino Tokens: { casinoTokenBalance.toString() }</div>
+        <div className='nav text-light row'>
+          <div className='col-6-md mr-md-5'>
+            <div className='col-12'><i className='fas fa-wallet'></i> Wallet address:</div>
+            <div className='col-12'><small>{ address }</small></div>
+          </div>
+          <div className='col-6-md'>
+            <div className='col-12'><i className='fas fa-comment-dollar'></i> USDC Balance: { ethers.utils.formatUnits(usdcBalance, usdcDecimals) } USDC</div>
+            <div className='col-12'><i className='far fa-copyright'></i> Casino Tokens: { casinoTokenBalance.toString() }</div>
           </div>
         </div>
       </div>
