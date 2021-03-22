@@ -57,10 +57,10 @@ const App = () => {
         <CasinoTokenExchange />
         <Casino />
       </main>
-      <footer className='container'>
-        <div className='d-flex justify-content-between'>
-          <span>Blocknumber: { block.blockNumber }</span>
-          <span>&copy; Hagen Schupp 2021</span>
+      <footer className='navbar navbar-expand-lg navbar-dark bg-dark text-light mt-5'>
+        <div className='container justify-content-md-center'>
+          <div className='col-sm-6 text-sm-left text-center'>Blocknumber: { block.blockNumber }</div>
+          <div className='col-sm-6 text-sm-right text-center'>&copy; Hagen Schupp 2021</div>
         </div>
       </footer>
     </EthereumContext.Provider>

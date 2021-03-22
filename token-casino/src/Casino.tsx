@@ -28,10 +28,12 @@ interface PlayEvent {
 const PlayEventElement = ({ playEvent }: { playEvent: PlayEvent }) => {
   return (
     <article>
-      <div>Casino Card: { playEvent.casinoCard.toString() }</div>
-      <div>Player Card: { playEvent.playerCard.toString() }</div>
-      { playEvent.hasPlayerWon && <div>You won!!! { playEvent.payout.toString() }</div> }
-      { !playEvent.hasPlayerWon && <div>You lost!!!</div> }
+      <div className='row my-5'>
+        <div className='col-md-6'>Casino Card: { playEvent.casinoCard.toString() }</div>
+        <div className='col-md-6'>Your Card: { playEvent.playerCard.toString() }</div>
+      </div>
+      { playEvent.hasPlayerWon && <div className='alert alert-success'>You won { playEvent.payout.toString() } CAS</div> }
+      { !playEvent.hasPlayerWon && <div className='alert alert-warning'>You lost your bet...</div> }
     </article>
   );
 }
@@ -111,20 +113,22 @@ const Casino = () => {
   return (
     <section className='container my-5'>
       <div className='row justify-content-md-center'>
-        <div className='col-8'>
+        <div className='col-md-8'>
           <h2>Casino</h2>
           { showErrors(errors) }
           { !!!playEvent && (<>
-            <label htmlFor='bet'>Max bet amount: { maxBetAmount.toString() }, Casino Balance: { casinoBalance.toString() } CAS.</label><br />
-            <input className='form-control' id='bet' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to bet' />
-            <button className='btn btn-primary' onClick={ (e) => placeBet() } disabled={ waiting } >Place Bet &amp; Play</button>
+            <div className='form-group'>
+              <label htmlFor='bet'>Max bet amount: { maxBetAmount.toString() }, Casino Balance: { casinoBalance.toString() } CAS.</label><br />
+              <input className='form-control' id='bet' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to bet' />
+            </div>
+            <button className='btn btn-primary col mb-5' onClick={ (e) => placeBet() } disabled={ waiting } ><i className='fas fa-dice'></i> Place Bet &amp; Play</button>
           </>) }
           { waiting && (<div className='d-flex justify-content-center'>
             <div className='spinner-grow text-primary' role='status'></div>
           </div>) }
           { playEvent && (<>
             <PlayEventElement playEvent={ playEvent } />
-            <button className='btn btn-primary' onClick={ (e) => setPlayEvent(undefined) }>Play again</button>
+            <button className='btn btn-primary col' onClick={ (e) => setPlayEvent(undefined) }><i className='fas fa-redo'></i> Play again</button>
           </>) }
         </div>
       </div>

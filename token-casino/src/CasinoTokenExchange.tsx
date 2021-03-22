@@ -92,11 +92,13 @@ const ExchangeUsdcForCasinoToken = () => {
   };
 
   return (
-    <article className='col-md-6'>
+    <article className='col-md-4'>
       { showErrors(errors) }
-      <label htmlFor='usdcToCas'>Exchange 1 USDC for { exchangeRate.toString() } CasinoToken.<br />You can get at most { maximumCasinoTokenCount.toString() } CasinoToken.</label><br />
-      <input className='form-control' id='usdcToCas' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
-      <button className='btn btn-primary' onClick={ (e) => mintCasinoToken() } disabled={ waiting }>Buy Casino Tokens</button>
+      <div className='form-group'>
+        <label htmlFor='usdcToCas'>Exchange 1 USDC for { exchangeRate.toString() } CasinoToken.<br />You can get at most { maximumCasinoTokenCount.toString() } CasinoToken.</label><br />
+        <input className='form-control' id='usdcToCas' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
+      </div>  
+      <button className='btn btn-primary col' onClick={ (e) => mintCasinoToken() } disabled={ waiting }><i className='fas fa-arrow-right'></i> Buy Casino Tokens</button>
     </article>
   );
 }
@@ -159,11 +161,13 @@ const ExchangeCasinoTokenForUsdc = () => {
   };
 
   return (
-    <article className='col-md-6'>
+    <article className='col-md-4'>
       { showErrors(errors) }
-      <label htmlFor='casToUsdc'>Exchange { exchangeRate.toString() } CasinoToken for 1 USDC.<br />You can change at most { casinoTokenCount.toString() } CasinoToken.</label><br />
-      <input className='form-control' id='casToUsdc' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
-      <button className='btn btn-primary' onClick={ (e) => burnCasinoToken() } disabled={ waiting }>Sell CasinoToken</button>
+      <div className='form-group'>
+        <label htmlFor='casToUsdc'>Exchange { exchangeRate.toString() } CasinoToken for 1 USDC.<br />You can change at most { casinoTokenCount.toString() } CasinoToken.</label><br />
+        <input className='form-control' id='casToUsdc' type='text' value= { (count || 0).toString() } onChange={ (e) => updateCount(e.target.value) } placeholder='CasinoToken to exchange' />
+      </div>
+      <button className='btn btn-primary col' onClick={ (e) => burnCasinoToken() } disabled={ waiting }><i className='fas fa-arrow-left'></i> Sell CasinoToken</button>
     </article>
   );
 }
@@ -171,7 +175,7 @@ const ExchangeCasinoTokenForUsdc = () => {
 const CasinoTokenExchange = () => {
   return (
     <section className='container my-5'>
-      <div className='row'>
+      <div className='row justify-content-md-center'>
         <ExchangeUsdcForCasinoToken />
         <ExchangeCasinoTokenForUsdc />
       </div>

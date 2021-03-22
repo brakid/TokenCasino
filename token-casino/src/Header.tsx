@@ -23,14 +23,17 @@ const Header = () => {
   }, [ block, contracts, address ]);
 
   return (
-    <nav className='navbar navbar-expand-md navbar-dark bg-dark'>
+    <nav className='navbar navbar-expand-sm navbar-dark bg-dark'>
       <div className='container'>
         <div className='navbar-header'>
-          <a className='navbar-brand' href='#'>Token Casino</a>
+          <a className='navbar-brand' href='#'><i className='fas fa-coins'></i>&nbsp;&nbsp;Token Casino</a>
         </div>
-        <div className='nav text-light d-flex flex-row justify-content-between'>
-          <div className='col-6-md mx-2'>Wallet address: { address }</div>
-          <div className='col-6-md mx-2 row'><span className='col-12 px-0'>USDC Balance: { ethers.utils.formatUnits(usdcBalance, usdcDecimals) } USDC</span><span className='col-12 px-0'>Casino Tokens: { casinoTokenBalance.toString() }</span></div>
+        <div className='nav text-light'>
+          <div className='col-6-md mr-md-5'><i className='fas fa-wallet'></i> Wallet address: <small>{ address }</small></div>
+          <div className='col-6-md row'>
+            <div className='col-12'>USDC Balance: { ethers.utils.formatUnits(usdcBalance, usdcDecimals) } USDC</div>
+            <div className='col-12'>Casino Tokens: { casinoTokenBalance.toString() }</div>
+          </div>
         </div>
       </div>
     </nav>
