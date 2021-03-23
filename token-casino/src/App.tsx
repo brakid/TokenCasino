@@ -59,8 +59,9 @@ const App = () => {
       </main>
       <footer className='navbar navbar-expand-lg navbar-dark bg-dark text-light mt-5'>
         <div className='container justify-content-md-center'>
-          <div className='col-sm-6 text-sm-left text-center'>Blocknumber: { block.blockNumber }</div>
-          <div className='col-sm-6 text-sm-right text-center'>&copy; Hagen Schupp 2021</div>
+          <div className='col-sm-3 text-sm-left text-center'>Blocknumber: { block.blockNumber }</div>
+          <div className='col-sm-3 text-center'><a href='http://www.freepik.com'>Cards designed by brgfx / Freepik</a></div>
+          <div className='col-sm-3 text-sm-right text-center'>&copy; Hagen Schupp 2021</div>
         </div>
       </footer>
     </EthereumContext.Provider>

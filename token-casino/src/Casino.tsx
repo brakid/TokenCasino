@@ -3,6 +3,19 @@ import { BigNumber, ethers, EventFilter } from 'ethers';
 import { EthereumContext } from './App';
 import { LARGE_ALLOWANCE, showErrors } from './utils/helpers';
 import { Contracts, EthereumData } from './utils/types';
+import ace from './cards/ace.png';
+import king from './cards/king.png';
+import queen from './cards/queen.png';
+import joker from './cards/joker.png';
+import ten from './cards/10.png';
+import nine from './cards/9.png';
+import eight from './cards/8.png';
+import seven from './cards/7.png';
+import six from './cards/6.png';
+import five from './cards/5.png';
+import four from './cards/4.png';
+import three from './cards/3.png';
+import two from './cards/2.png';
 
 const increaseAllowance = (tokenContract: ethers.Contract, initiatorAddress: string, amount: BigNumber): Promise<void> => {
   return new Promise(async (resolve, reject) => {
@@ -17,11 +30,66 @@ const increaseAllowance = (tokenContract: ethers.Contract, initiatorAddress: str
   });
 };
 
+enum CardValue {
+  Two,
+  Three,
+  Four,
+  Five,
+  Six,
+  Seven,
+  Eight,
+  Nine,
+  Ten,
+  Joker,
+  Queen,
+  King, 
+  Ace,
+};
+
+const numberToCardValue = (value: number): CardValue => {
+  switch (value) {
+    case 0: return CardValue.Two;
+    case 1: return CardValue.Three;
+    case 2: return CardValue.Four;
+    case 3: return CardValue.Five;
+    case 4: return CardValue.Six;
+    case 5: return CardValue.Seven;
+    case 6: return CardValue.Eight;
+    case 7: return CardValue.Nine;
+    case 8: return CardValue.Ten;
+    case 9: return CardValue.Joker;
+    case 10: return CardValue.Queen;
+    case 11: return CardValue.King;
+    case 12: return CardValue.Ace;
+    default: throw new Error('Invalid card number');
+  }
+};
+
+const CardElement = ({ card }: { card: CardValue }) => {
+  return (
+    <>
+      <img className='rounded mx-auto' src={ ace } style={{ display: (card === CardValue.Ace) ? 'block' : 'none' }} alt='Ace'/>
+      <img className='rounded mx-auto' src={ king } style={{ display: (card === CardValue.King) ? 'block' : 'none' }} alt='King'/>
+      <img className='rounded mx-auto' src={ queen } style={{ display: (card === CardValue.Queen) ? 'block' : 'none' }} alt='Queen'/>
+      <img className='rounded mx-auto' src={ joker } style={{ display: (card === CardValue.Joker) ? 'block' : 'none' }} alt='Joker'/>
+      <img className='rounded mx-auto' src={ ten } style={{ display: (card === CardValue.Ten) ? 'block' : 'none' }} alt='Ten'/>
+      <img className='rounded mx-auto' src={ nine } style={{ display: (card === CardValue.Nine) ? 'block' : 'none' }} alt='Nine'/>
+      <img className='rounded mx-auto' src={ eight } style={{ display: (card === CardValue.Eight) ? 'block' : 'none' }} alt='Eight'/>
+      <img className='rounded mx-auto' src={ seven } style={{ display: (card === CardValue.Seven) ? 'block' : 'none' }} alt='Seveb'/>
+      <img className='rounded mx-auto' src={ six } style={{ display: (card === CardValue.Six) ? 'block' : 'none' }} alt='Six'/>
+      <img className='rounded mx-auto' src={ five } style={{ display: (card === CardValue.Five) ? 'block' : 'none' }} alt='Five'/>
+      <img className='rounded mx-auto' src={ four } style={{ display: (card === CardValue.Four) ? 'block' : 'none' }} alt='Four'/>
+      <img className='rounded mx-auto' src={ three } style={{ display: (card === CardValue.Three) ? 'block' : 'none' }} alt='Three'/>
+      <img className='rounded mx-auto' src={ two } style={{ display: (card === CardValue.Two) ? 'block' : 'none' }} alt='Two'/>
+    </>
+  );
+}
+
 interface PlayEvent {
   payout: BigNumber,
   hasPlayerWon: boolean,
-  casinoCard: BigNumber,
-  playerCard: BigNumber,
+  casinoCard: number,
+  playerCard: number,
   date: Date,
 };
 
@@ -29,8 +97,8 @@ const PlayEventElement = ({ playEvent }: { playEvent: PlayEvent }) => {
   return (
     <article>
       <div className='row my-5'>
-        <div className='col-md-6'>Casino Card: { playEvent.casinoCard.toString() }</div>
-        <div className='col-md-6'>Your Card: { playEvent.playerCard.toString() }</div>
+        <div className='col-md-6'><b>Casino Card:</b><CardElement card={ numberToCardValue(playEvent.casinoCard) } /></div>
+        <div className='col-md-6 mt-md-0 mt-5'><b>Your Card:</b><CardElement card={ numberToCardValue(playEvent.playerCard) } /></div>
       </div>
       { playEvent.hasPlayerWon && <div className='alert alert-success'>You won { playEvent.payout.toString() } CAS</div> }
       { !playEvent.hasPlayerWon && <div className='alert alert-warning'>You lost your bet...</div> }
@@ -96,7 +164,7 @@ const Casino = () => {
         await transaction.wait();
         
         const filter: EventFilter = contracts.casino.filters['PlayEvent(address,uint256,uint256,bool,uint32,uint32,uint256)'](address);
-        contracts.casino.once(filter, (player: string, bet: BigNumber, payout: BigNumber, hasPlayerWon: boolean, casinoCard: BigNumber, playerCard: BigNumber, timestamp: BigNumber) => {
+        contracts.casino.once(filter, (player: string, bet: BigNumber, payout: BigNumber, hasPlayerWon: boolean, casinoCard: number, playerCard: number, timestamp: BigNumber) => {
           setPlayEvent({ payout, hasPlayerWon, casinoCard, playerCard, date: new Date(timestamp.toNumber() * 1000) });
           setWaiting(false);
         });
@@ -114,7 +182,7 @@ const Casino = () => {
     <section className='container my-5'>
       <div className='row justify-content-md-center'>
         <div className='col-md-8'>
-          <h2>Casino</h2>
+          <h2><i className='fas fa-dice'></i> Casino</h2>
           { showErrors(errors) }
           { !!!playEvent && (<>
             <div className='form-group'>
