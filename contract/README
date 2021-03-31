@@ -1,3 +1,6 @@
 ## Potential attack vectors:
 * one of the casino paths running out of gas?: Difference in cost for transferFrom and transfer? If transferFrom > transfer then a player could set gas amount to what is required to go on the winning streak and cause out of gas for the other path thus never loosing
 * should not be an issue as running out of gas will keep the transaction cost from the player.
+
+Test CasinoToken on the BSC Testnet:
+https://testnet.bscscan.com/address/0xf9f07d01fc17f2e987d49b97020ff79a1e9ab240
