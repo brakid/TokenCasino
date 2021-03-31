@@ -16,11 +16,11 @@
   "keywords": [],
   "description": "",
   "devDependencies": {
-    "@openzeppelin/contracts": "^3.4.1",
+    "@openzeppelin/contracts": "^4.0.0",
     "@openzeppelin/test-environment": "^0.1.9",
     "@openzeppelin/test-helpers": "^0.5.10",
     "chai": "^4.3.3",
     "mocha": "^8.3.1",
-    "truffle": "^5.2.3"
+    "truffle": "^5.2.6"
   }
 }

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.4;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./Owned.sol";
 
 contract CasinoToken is ERC20 {
@@ -25,10 +26,13 @@ contract CasinoToken is ERC20 {
   );
 
   constructor(address usdcAddress, uint initialConversionNominator, uint initialConversionDenominator) ERC20('Casino Token', 'CAS') {
-    _setupDecimals(0); //token is no divisible
     usdc = IERC20(usdcAddress);
     conversionNominator = initialConversionNominator;
     conversionDenominator = initialConversionDenominator;
+  }
+
+  function decimals() public pure override returns (uint8) {
+    return 0;
   }
 
   function getConversionFactor() external view returns (uint, uint) {
